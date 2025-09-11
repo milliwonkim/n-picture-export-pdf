@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 permissions:
@@ -34,6 +34,9 @@ jobs:
         run: |
           echo "VITE_BASE=/${{ github.event.repository.name }}/" >> $GITHUB_ENV
           npm run build
+
+      - name: Create SPA fallback (404.html)
+        run: cp dist/index.html dist/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
