@@ -13,7 +13,7 @@ function App() {
   const [orderMap, setOrderMap] = useState<Record<string, number>>({})
   const [metaBusy, setMetaBusy] = useState<boolean>(false)
   const addIndexRef = useRef(0)
-  type SortMode = 'imported' | 'latest' | 'exif'
+  type SortMode = 'user' | 'imported' | 'latest' | 'exif'
   const [sortMode, setSortMode] = useState<SortMode>('imported')
   const [exifTimes, setExifTimes] = useState<Record<string, number>>({})
 
@@ -125,7 +125,7 @@ function App() {
       .sort((a, b) => (orderMap[a.id] ?? 0) - (orderMap[b.id] ?? 0))
     const rest = items.filter((it) => orderMap[it.id] == null)
     const unassigned = (() => {
-      if (sortMode === 'imported') return [...rest].sort((a, b) => a.addedIndex - b.addedIndex)
+      if (sortMode === 'user' || sortMode === 'imported') return [...rest].sort((a, b) => a.addedIndex - b.addedIndex)
       if (sortMode === 'latest') return [...rest].sort((a, b) => b.file.lastModified - a.file.lastModified)
       // exif mode
       return [...rest].sort((a, b) => {
@@ -228,6 +228,8 @@ function App() {
       } else {
         const count = Object.keys(prev).length
         if (count >= perPage) return prev
+        // switch UI select to "user" when a manual order is assigned
+        setSortMode('user')
         const entries = Object.entries(prev).sort((a, b) => a[1] - b[1])
         const compact: Record<string, number> = {}
         entries.forEach(([k], i) => (compact[k] = i + 1))
@@ -333,6 +335,7 @@ function App() {
             value={sortMode}
             onChange={(e) => setSortMode(e.target.value as SortMode)}
           >
+            <option value="user">유저 선택</option>
             <option value="imported">불러온 순서</option>
             <option value="latest">최신순(파일시간)</option>
             <option value="exif">촬영시간(EXIF)</option>
