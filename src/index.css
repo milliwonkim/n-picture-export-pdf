@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@source "./index.html";
+@source "./src/**/*.{js,ts,jsx,tsx}";
+
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  body {
+    @apply min-h-screen bg-white text-gray-900 dark:bg-neutral-900 dark:text-neutral-100;
+  }
+  #root {
+    @apply max-w-5xl mx-auto p-6;
+  }
+}
